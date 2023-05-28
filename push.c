@@ -1,38 +1,48 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
 #include "monty.h"
 
 /**
- * push - push element into the stack
- * @stack: stack given by main
- * @line_cnt: amount of lines
- *
- * Return: void
+ * f_push - add node to the stack
+ * @head: stack head
+ * @counter: line_number
+ * Return: no return
  */
-void push(stack_t **stack, unsigned int line_cnt)
+ 
+void f_push(stack_t **head, unsigned int counter)
 {
-	char *n = global.argument;
+	int n;
+	char *arg = bus.arg;
 
-	if ((is_digit(n)) == 0)
-	{
-		fprintf(stderr, "L%d: usage: push integer\n", line_cnt);
-		exit(EXIT_FAILURE);
-	}
+	if (arg == NULL || !is_valid_integer(arg))
+		handle_error(counter);
 
-	if (global.data_struct == 1)
-	{
-		if (!add_node(stack, atoi(global.argument)))
-		{
-			exit(EXIT_FAILURE);
-		}
-	}
+	n = atoi(arg);
+	if (bus.lifi == 0)
+		addnode(head, n);
 	else
-	{
-		if (!queue_node(stack, atoi(global.argument)))
-		{
-			exit(EXIT_FAILURE);
-		}
-	}
+		addqueue(head, n);
 }
+
+
+int is_valid_integer(const char *str)
+{
+	int i = 0;
+	if (str[0] == '-')
+		i++;
+	for (; str[i] != '\0'; i++)
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return 0;
+	}
+	return 1;
+}
+
+
+void handle_error(unsigned int counter)
+{
+	fprintf(stderr, "L%d: usage: push integer\n", counter);
+	fclose(bus.file);
+	free(bus.content);
+	free_stack(*head);
+	exit(EXIT_FAILURE);
+}
+

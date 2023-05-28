@@ -4,13 +4,6 @@
 #include <string.h>
 #include "monty.h"
 
-/**
-* pop - pops the very top
-* @stack: stack given by main
-* @line_cnt: line number for error messages
-*
-* Return: void
-*/
 void pop(stack_t **stack, unsigned int line_cnt)
 {
 	stack_t *tmp = NULL;
@@ -25,7 +18,6 @@ void pop(stack_t **stack, unsigned int line_cnt)
 	tmp = (*stack)->next;
 	free(*stack);
 	*stack = tmp;
-	if (!*stack)
-		return; /* prevents errors cause next line might assign a NULL */
-	(*stack)->prev = NULL;
+	if (*stack)
+		(*stack)->prev = NULL;
 }

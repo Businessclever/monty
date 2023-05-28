@@ -6,14 +6,19 @@
  * @counter: line_number
  * Return: no return
  */
- 
 void f_push(stack_t **head, unsigned int counter)
 {
 	int n;
 	char *arg = bus.arg;
 
-	if (arg == NULL || !is_valid_integer(arg))
-		handle_error(counter);
+	if (!arg || !is_valid_integer(arg))
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", counter);
+		fclose(bus.file);
+		free(bus.content);
+		free_stack(*head);
+		exit(EXIT_FAILURE);
+	}
 
 	n = atoi(arg);
 	if (bus.lifi == 0)
@@ -22,7 +27,11 @@ void f_push(stack_t **head, unsigned int counter)
 		addqueue(head, n);
 }
 
-
+/**
+ * is_valid_integer - checks if a string is a valid integer
+ * @str: string to check
+ * Return: 1 if valid integer, 0 otherwise
+ */
 int is_valid_integer(const char *str)
 {
 	int i = 0;
@@ -34,15 +43,5 @@ int is_valid_integer(const char *str)
 			return 0;
 	}
 	return 1;
-}
-
-
-void handle_error(unsigned int counter)
-{
-	fprintf(stderr, "L%d: usage: push integer\n", counter);
-	fclose(bus.file);
-	free(bus.content);
-	free_stack(*head);
-	exit(EXIT_FAILURE);
 }
 

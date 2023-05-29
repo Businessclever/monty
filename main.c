@@ -27,20 +27,30 @@ void file_error(char *argv)
 }
 
 int status = 0;
-
 /**
- * process_file - process the Monty file line by line
- * @file: file pointer
+ * main - entry point
+ * @argv: list of arguments passed to our program
+ * @argc: ammount of args
  *
  * Return: nothing
  */
-void process_file(FILE *file)
+int main(int argc, char **argv)
 {
+	FILE *file;
 	size_t buf_len = 0;
 	char *buffer = NULL;
 	char *str = NULL;
 	stack_t *stack = NULL;
 	unsigned int line_cnt = 1;
+
+	global.data_struct = 1;
+	if (argc != 2)
+		error_usage();
+
+	file = fopen(argv[1], "r");
+
+	if (!file)
+		file_error(argv[1]);
 
 	while (getline(&buffer, &buf_len, file) != -1)
 	{
@@ -61,33 +71,9 @@ void process_file(FILE *file)
 		opcode(&stack, str, line_cnt);
 		line_cnt++;
 	}
-
 	free(buffer);
 	free_stack(stack);
-}
-
-/**
- * main - entry point
- * @argv: list of arguments passed to our program
- * @argc: amount of args
- *
- * Return: nothing
- */
-int main(int argc, char **argv)
-{
-	FILE *file;
-
-	global.data_struct = 1;
-	if (argc != 2)
-		error_usage();
-
-	file = fopen(argv[1], "r");
-
-	if (!file)
-		file_error(argv[1]);
-
-	process_file(file);
-
 	fclose(file);
 	exit(status);
 }
+
